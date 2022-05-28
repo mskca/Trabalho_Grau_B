@@ -49,10 +49,7 @@ A implementação pode ser feita na linguagem de programação de preferência d
 práticas para a geração de um código-fonte seguro. Por isso, o grupo deve (i) seguir os conceitos estudados ao longo 
 do semestre na atividade acadêmica (por exemplo, validando todas as entradas do programa); e (ii) pesquisar por 
 fraquezas de código-fonte (Common Weakness Enumeration – CWE), disponíveis em https://cwe.mitre.org/, estudálas e aplicar os ensinamentos no código desenvolvido.
-Universidade do Vale do Rio dos Sinos
-Segurança da Informação
-Atividade acadêmica: Segurança de Aplicações
-Prof. Daniel Stefani Marcon (danielstefani@unisinos.br)
+
 Por fim, o grupo deve escrever um relatório explicando (i) quais CWEs foram pesquisadas e como elas ajudaram a 
 aumentar a segurança do código-fonte; e (ii) como usar o software desenvolvido. O relatório deve ser escrito em 
 latex e utilizar o template para artigos da SBC (disponível em https://www.sbc.org.br/documentos-dasbc/category/169-templates-para-artigos-e-capitulos-de-livros). Sugere-se o uso de uma ferramenta colaborativa de 
