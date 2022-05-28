@@ -1,13 +1,14 @@
-#pip install requests
 import requests
 import json 
 
-def buscar_dados():
-    request = requests.get("http://localhost:3002/api/todo")
-    todos = json.loads(request.content)
-    print(todos)
-    print(todos[0]['titulo'])
+URL_Master="http://cve.circl.lu/api/"
+
+def BuscaCVE ():
+    cve_code = input ("Digite CVE: \n") 
+    requestCVE = requests.get(URL_Master + "/cve/" + cve_code)
+    cve_dados = json.loads(requestCVE.content)
+    print(cve_dados)
 
 if __name__ == '__main__':
-    buscar_dados()
+    BuscaCVE()
 

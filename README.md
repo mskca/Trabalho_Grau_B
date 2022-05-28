@@ -1,7 +1,7 @@
 # Trabalho_Grau_B
 
-Instalaçõa de Dependencias:
--#pip install requests
+Instalação de Dependencias:
+#pip install requests
 
 Url Codigo consulta:
 https://www.circl.lu/services/cve-search/
