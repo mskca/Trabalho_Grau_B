@@ -1,4 +1,3 @@
-
 from ast import While
 from asyncio.windows_events import NULL
 from logging import exception
@@ -24,6 +23,13 @@ TD = NULL
 CR = NULL
 IR = NULL
 AR = NULL
+#Carrega variaveis para calculo: 
+AccessVector = NULL
+AccessComplexity = NULL
+Authentication = NULL
+ConfidentialityImpact = NULL
+IntegrityImpact = NULL
+AvailabilityImpact = NULL
 
 #Carregar e Validar Dados Temporais de Ambiente
 
@@ -59,14 +65,6 @@ def Calcula_CVSS():
     cvss_vector = cve_dados.get('cvss-vector')
     cvss_vector = (cvss_vector.split('/'))
     cvss_calc= 0;
-    
-    #Carrega variaveis para calculo: 
-    AccessVector = NULL
-    AccessComplexity = NULL
-    Authentication = NULL
-    ConfidentialityImpact = NULL
-    IntegrityImpact = NULL
-    AvailabilityImpact = NULL
            
     #Calcula Access Vector 
     if cvss_vector[0] in "AV:N":
@@ -79,7 +77,6 @@ def Calcula_CVSS():
         Exc_Falta_Dados(cvss_vector[0],'AccessVector')
     
     #Calcula Access Complexity
-    
     if cvss_vector[1] in 'AC:H':
         AccessComplexity = 0.35
     elif  cvss_vector[1] in 'AC:M':
@@ -89,8 +86,7 @@ def Calcula_CVSS():
     else:
         Exc_Falta_Dados(cvss_vector[0],'AccessComplexity')
     
-    #Calcula Authentication 
-    
+    #Calcula Authentication  
     if cvss_vector[2] in 'Au:M':
         Authentication = 0.45
     elif cvss_vector[2] in 'Au:S':
@@ -101,7 +97,6 @@ def Calcula_CVSS():
         Exc_Falta_Dados(cvss_vector[0],'Authentication')
         
     #Calcula ConfidentialityImpact 
-    
     if cvss_vector[3] in 'C:N':
         ConfidentialityImpact = 0
     elif  cvss_vector[3] in 'C:P':
@@ -112,7 +107,6 @@ def Calcula_CVSS():
         Exc_Falta_Dados(cvss_vector[0],'ConfidentialityImpact')
         
     #Calcula ConfidentialityImpact 
-    
     if cvss_vector[4] in 'I:N':
         IntegrityImpact = 0
     elif  cvss_vector[4] in 'I:P':
@@ -123,7 +117,6 @@ def Calcula_CVSS():
         Exc_Falta_Dados(cvss_vector[0],'IntegrityImpact')
         
     #Calcula AvailabilityImpact 
-    
     if cvss_vector[5] in 'A:N':
         AvailabilityImpact = 0
     elif  cvss_vector[5] in 'A:P':
@@ -132,20 +125,6 @@ def Calcula_CVSS():
         AvailabilityImpact = 0.66
     else:
         Exc_Falta_Dados(cvss_vector[0],'AvailabilityImpact')
-        
-        #Calcula AvailabilityImpact 
-    
-    if cvss_vector[5] in 'A:N':
-        AvailabilityImpact = 0
-    elif  cvss_vector[5] in 'A:P':
-        AvailabilityImpact = 0.275
-    elif  cvss_vector[5] in 'A:C':
-        AvailabilityImpact = 0.66
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'AvailabilityImpact')
-        
-        
-
 
     #Calculo de CVSS2.0
     Impact = 10.41*(1-(1-ConfidentialityImpact)*(1-IntegrityImpact)*(1-AvailabilityImpact))
