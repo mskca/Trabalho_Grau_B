@@ -2,6 +2,7 @@
 
 Instalação de Dependencias:
 #pip install requests
+#pip install cvss
 
 Url Codigo consulta:
 https://www.circl.lu/services/cve-search/
