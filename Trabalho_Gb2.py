@@ -93,7 +93,7 @@ def InsereDadosManual ():
             
             AR = input ('Insira Nivel de Availability Requirement: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')
             AirrrR = AR
-            while AR not in  ['ND,' ,'L', 'M', 'H']:
+            while AR not in  ['ND' ,'L', 'M', 'H']:
                 AR = input ('Insira Nivel de Availability Requirement: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')       
                                       
         elif Inputvect == 'N':
