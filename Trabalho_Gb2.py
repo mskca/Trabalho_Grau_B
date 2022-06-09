@@ -3,30 +3,34 @@ from asyncio.windows_events import NULL
 from logging import exception
 from operator import ne
 from pickle import FALSE, TRUE
+from cvsslib import cvss2, calculate_vector
 import requests
 import json 
 import os
 import time
+import re
 
 #REFER:https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator
 
-#Criar Variveis com valor nulo
+#Criar Variveis com valor nulo 
 cvss_vector = NULL
 cve_dados = NULL
-E = NULL
-RL = NULL
-RC = NULL
-CDP = NULL
-TD = NULL
-CR = NULL
-IR = NULL
-AR = NULL
-AccessVector = NULL
-AccessComplexity = NULL
-Authentication = NULL
-ConfidentialityImpact = NULL
-IntegrityImpact = NULL
-AvailabilityImpact = NULL
+#Valores padrao para not defined
+E = "H"
+RL = "U"
+RC = "C"
+CDP = "N"
+TD = "H"
+CR = "M"
+IR = "M"
+AR = "M"
+#Valores padrao para not defined
+AccessVector = "NULL"
+AccessComplexity = "NULL"
+Authentication = "NULL"
+ConfidentialityImpact = "NULL"
+IntegrityImpact = "NULL"
+AvailabilityImpact = "NULL"
 Vect_Temp = NULL 
 Vect_Amb = NULL 
 
@@ -37,6 +41,7 @@ def InsereDadosManual ():
     intv = 0
     while intv == 0:
         Inputvect = input ('Deseja Listar Vectores Temporais? (S)SIM / (N)NAO \n')
+        global E, RL, RC
         if Inputvect == 'S':
             intv = 1
             Vect_Temp = TRUE
@@ -57,12 +62,15 @@ def InsereDadosManual ():
             intv = 1
             Vect_Temp = FALSE
         else:
+            print("Entrada Invalida!")
+            time.sleep(2)
             intv = 0
     
     #Insere Dados Ambientais 
     intv = 0
     while intv == 0:
         Inputvect = input ('Deseja Listar Vectores Ambientais? (S)SIM / (N)NAO \n')
+        global CDP, CR, TD, IR, AR
         if Inputvect == 'S':
             intv = 1
             Vect_Amb = TRUE
@@ -84,6 +92,7 @@ def InsereDadosManual ():
                 IR = input ('Insira Nivel de Integrity Requirement:(ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')  
             
             AR = input ('Insira Nivel de Availability Requirement: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')
+            AirrrR = AR
             while AR not in  ['ND,' ,'L', 'M', 'H']:
                 AR = input ('Insira Nivel de Availability Requirement: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')       
                                       
@@ -97,19 +106,26 @@ def InsereDadosManual ():
 dd = 0
 while dd == 0:
     os.system('cls') or None
-    cve_code = input ("Insira Corretamente CVE, ex:CVE-2021-34527:  \n") 
-    try:
-        URL_Master="https://cve.circl.lu/api/cve/"
-        print ('Carregando dados de', URL_Master + cve_code, '\n ------------------\n ')
-        requestCVE = requests.get(URL_Master + cve_code, verify=False)
-        cve_dados = json.loads(requestCVE.content)
-        #Valida se dados não estão nulos
-        if cve_dados.get('summary') != NULL:
-            dd = 1
-            print ('Dados Carregados Corretamente...')
-        requestCVE.raise_for_status()
-    except Exception as e:
-        print ('ERRO: \n' , e)
+    cve_code = input ("Insira Corretamente CVE, ex:CVE-2021-34527:  \n")
+    
+    # Regex para validar entrada do CVE
+    if re.match("CVE-[0-9]{4}-[0-9]{4,5}", cve_code):
+ 
+        try:
+            URL_Master="https://cve.circl.lu/api/cve/"
+            print ('Carregando dados de', URL_Master + cve_code, '\n ------------------\n ')
+            requestCVE = requests.get(URL_Master + cve_code, verify=False)
+            cve_dados = json.loads(requestCVE.content)
+            #Valida se dados não estão nulos
+            if cve_dados.get('summary') != NULL:
+                dd = 1
+                print ('Dados Carregados Corretamente...')
+            requestCVE.raise_for_status()
+        except Exception as e:
+            print ('ERRO: \n' , e)
+    else:
+        print("Entrada invalida")
+        time.sleep(2)
       
 def Exc_Falta_Dados(Val, fun):
     if fun == 'temp' and Vect_Temp == TRUE:
@@ -121,143 +137,29 @@ def Exc_Falta_Dados(Val, fun):
     elif Val != NULL:
         print ('dados nulos')
     else:
-        print ('Informado Dados Errados, valor inforamdo: \n', fun, ': ' , Val )
+        print ('Informado Dados Errados, valor informado: \n', fun, ': ' , Val )
     exit()
 
 def Calcula_CVSS():
-    #separa cvss_vector e transformar em lista
+    
     cvss_vector = cve_dados.get('cvss-vector')
     cvss_vector = (cvss_vector.split('/'))
-    cvss_calc= 0;
-           
-    #Calcula Access Vector 
-    if cvss_vector[0] in "AV:N":
-        AccessVector = 1.0
-    elif  cvss_vector[0] in 'AV:A':
-        AccessVector = 0.646
-    elif  cvss_vector[0] in 'AV:L':
-        AccessVector = 0.395
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'AccessVector')
     
-    #Calcula Access Complexity
-    if cvss_vector[1] in 'AC:H':
-        AccessComplexity = 0.35
-    elif  cvss_vector[1] in 'AC:M':
-        AccessComplexity = 0.61
-    elif  cvss_vector[1] in 'AC:L':
-        AccessComplexity = 0.71
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'AccessComplexity')
+    #Define valores do basescore
+    AccessVector = cvss_vector[0]
+    AccessComplexity = cvss_vector[1]
+    Authentication = cvss_vector[2]
+    ConfidentialityImpact = cvss_vector[3]
+    IntegrityImpact = cvss_vector[4]
+    AvailabilityImpact = cvss_vector[5]
     
-    #Calcula Authentication  
-    if cvss_vector[2] in 'Au:M':
-        Authentication = 0.45
-    elif cvss_vector[2] in 'Au:S':
-        Authentication = 0.56
-    elif  cvss_vector[2] in 'Au:N':
-        Authentication = 0.704
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'Authentication')
-        
-    #Calcula ConfidentialityImpact 
-    if cvss_vector[3] in 'C:N':
-        ConfidentialityImpact = 0
-    elif  cvss_vector[3] in 'C:P':
-        ConfidentialityImpact = 0.275
-    elif  cvss_vector[3] in 'C:C':
-        ConfidentialityImpact = 0.66
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'ConfidentialityImpact')
-        
-    #Calcula ConfidentialityImpact 
-    if cvss_vector[4] in 'I:N':
-        IntegrityImpact = 0
-    elif  cvss_vector[4] in 'I:P':
-        IntegrityImpact = 0.275
-    elif  cvss_vector[4] in 'I:C':
-        IntegrityImpact = 0.66
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'IntegrityImpact')
-        
-    #Calcula AvailabilityImpact 
-    if cvss_vector[5] in 'A:N':
-        AvailabilityImpact = 0
-    elif  cvss_vector[5] in 'A:P':
-        AvailabilityImpact = 0.275
-    elif  cvss_vector[5] in 'A:C':
-        AvailabilityImpact = 0.66
-    else:
-        Exc_Falta_Dados(cvss_vector[0],'AvailabilityImpact')
-
-    #Calculo de CVSS2.0
-    Impact = 10.41*(1-(1-ConfidentialityImpact)*(1-IntegrityImpact)*(1-AvailabilityImpact))
-    Exploitability = 20*AccessVector*AccessComplexity*Authentication
+    #Gera vector para calculo automatico do cvss2
+    vector_v2 = AccessVector+"/"+AccessComplexity+"/"+Authentication+"/"+ConfidentialityImpact+"/"+IntegrityImpact+"/"+AvailabilityImpact+"/E:"+E+"/RL:"+RL+"/RC:"+RC+"/CDP:"+CDP+"/TD:"+TD+"/CR:"+CR+"/IR:"+IR+"/AR:"+AR
+    calculo_valores = calculate_vector(vector_v2, cvss2)
     
-    #Limitar Casas Decimais
-    Impact = round (Impact, 1)
-    Exploitability = round (Exploitability, 1)
-    
-    #Calculo de CVSS2.0
-    if Impact != 0:
-        f_impact = 1.176
-    BaseScore = ((0.6*Impact)+(0.4*Exploitability)-1.5)*f_impact
-    BaseScore = round (BaseScore, 1)
-    
-    #Calculo de CVSS Temporal  
-
-    #Exploitability Temporal 
-    if E == 'ND':
-        Exploitability_level = 1
-    elif E == 'H':
-        Exploitability_level = 1
-    elif E == 'F':
-        Exploitability_level = 0.95
-    elif E == 'POC':
-        Exploitability_level = 0.9
-    elif E == 'U':
-        Exploitability_level = 0.85
-    elif Vect_Temp == False:
-        print ('Exploitability Temporal: Informação Nula')
-    else:
-        Exc_Falta_Dados(0,'temp')
-        
-    #RemediationLevel Temporal 
-    if RL == 'ND':
-        RemediationLevel = 1
-    elif RL == 'U': 
-        RemediationLevel = 1
-    elif RL == 'W':
-        RemediationLevel = 0.95
-    elif RL == 'TF':
-        RemediationLevel = 0.90
-    elif RL == 'OF':
-        RemediationLevel = 0.87
-    elif Vect_Temp == False:
-        print ('RemediationLevel Temporal: Informação Nula')
-    else:
-        Exc_Falta_Dados(0,'temp')
-    
-    #ReportConfidence Temporal 
-    if RC == 'ND':
-        ReportConfidence = 1
-    elif RC == 'C':
-        ReportConfidence = 1
-    elif RC == 'UR':
-        ReportConfidence = 0.95
-    elif RC == 'UC':
-        ReportConfidence = 0.90
-    elif Vect_Temp == False:
-        print ('ReportConfidence Temporal: Informação Nula')
-    else:
-        Exc_Falta_Dados(0,'temp')
-    
-    #Calculo de CVSS Ambiente  
-
-    
-    #Calculo de Temporal Score
-    TemporalScore = NULL
-    #TemporalScore = BaseScore*Exploitability_level*RemediationLevel*ReportConfidence
+    BaseScore = calculo_valores[0]
+    TemporalScore = calculo_valores[1]
+    EnviromentalScore = calculo_valores[2]
     
     #Imprime dados
     print ('\n -------------------------------------------- \n')
@@ -266,18 +168,13 @@ def Calcula_CVSS():
     print ('\n -------------------------------------------- \n')
     print ('Base Scores: \n')
     print ('Base: ', BaseScore)
-    print ('Impacto: ', Impact)
-    print ('Explorabilidade: ', Exploitability)
     print ('\n -------------------------------------------- \n')
     print ('Temporal Scores:' , TemporalScore ,'\n')
     print ('\n -------------------------------------------- \n')
-    print ('Environmental: \n')
+    print ('Environmental:', EnviromentalScore,'\n')
     print ('\n -------------------------------------------- \n')
-    print ('Overall: \n')
-    print ('\n -------------------------------------------- \n')
-    
+
 if __name__ == '__main__':
     InsereDadosManual ()
     Calcula_CVSS()
     time.sleep(120)
-    
