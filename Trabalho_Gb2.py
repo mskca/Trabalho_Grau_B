@@ -47,15 +47,15 @@ def InsereDadosManual ():
             Vect_Temp = TRUE
             
             E = input ('Insira Nivel de Explorabilidade: (ND) Not Defined / (U) Unproven that Expliot exists / (POC) Proof of concept code / (F) Functional exploit exists / (H) High\n' )
-            while E not in  ['ND,' ,'U', 'POC', 'F', 'H']:
+            while E not in  ['ND' ,'U', 'POC', 'F', 'H']:
                 E = input ('Insira Nivel de Explorabilidade: (ND) Not Defined / (U) Unproven that Expliot exists / (POC) Proof of concept code / (F) Functional exploit exists / (H) High\n' )
             
             RL = input ('Insira Nivel de Remediação: (ND) Not Defined / (OF)Official Fix / (TF) Temporarary Fix / (W) Workaround / (U) Unavailable \n')
-            while RL not in ['ND,' ,'OF', 'TF', 'W', 'U']:
+            while RL not in ['ND' ,'OF', 'TF', 'W', 'U']:
                 RL = input ('Insira Nivel de Remediação: (ND) Not Defined / (OF)Official Fix / (TF) Temporarary Fix / (W) Workaround / (U) Unavailable \n')
 
             RC = input ('Insira Nivel de Report: (ND) Not Defined / (UC) Unconfirmed / (UR) Uncorroborated / (C) Confirmed \n')
-            while RC not in ['ND,' ,'UC', 'C', 'UR']:   
+            while RC not in ['ND' ,'UC', 'C', 'UR']:   
                 RC = input ('Insira Nivel de Report: (ND) Not Defined / (UC) Unconfirmed / (UR) Uncorroborated / (C) Confirmed \n')
 
         elif Inputvect == 'N':
@@ -76,19 +76,19 @@ def InsereDadosManual ():
             Vect_Amb = TRUE
             print ("Insira Corremente os dados Ambientais: \n")
             CDP = input ('Insira Nivel de Collateral Damage Potential: (ND) Not Defined / (N) None / (L) Low-light loss / (LM) Low-Medium / (MH) Medium-High / (H) High-Catastraphic loss\n' )
-            while CDP not in  ['ND,', 'N' ,'L', 'LM', 'MH', 'H']:
+            while CDP not in  ['ND', 'N' ,'L', 'LM', 'MH', 'H']:
                 CDP = input ('Insira Nivel de Collateral Damage Potential: (ND) Not Defined / (N) None / (L) Low-light loss / (LM) Low-Medium / (MH) Medium-High / (H) High-Catastraphic loss\n' )
             
             CR = input ('Insira Nivel de Confidentiality Requirement : (ND) Not Defined / (N)None [0%] /  (L) Low [0-25%] / (M) Medium [26-75%] / (H) Hgh [76-100%] \n')
-            while CR not in   ['ND,' ,'N', 'L', 'M', 'H']:
+            while CR not in   ['ND' ,'N', 'L', 'M', 'H']:
                 CR = input ('Insira Nivel de Confidentiality Requirement : (ND) Not Defined / (N)None [0%] /  (L) Low [0-25%] / (M) Medium [26-75%] / (H) Hgh [76-100%] \n')
             
             TD = input ('Insira Nivel de Remediação: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')
-            while TD  not in   ['ND,' ,'L', 'M', 'H']:
+            while TD  not in   ['ND' ,'L', 'M', 'H']:
                 TD = input ('Insira Nivel de Remediação: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')
             
             IR = input ('Insira Nivel de Integrity Requirement:(ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n') 
-            while IR not in   ['ND,' ,'L', 'M', 'H']:
+            while IR not in   ['ND' ,'L', 'M', 'H']:
                 IR = input ('Insira Nivel de Integrity Requirement:(ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')  
             
             AR = input ('Insira Nivel de Availability Requirement: (ND) Not Defined /  (L) Low / (M) Medium  / (H) Hgh  \n')
