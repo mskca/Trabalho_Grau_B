@@ -24,7 +24,7 @@ TD = "H"
 CR = "M"
 IR = "M"
 AR = "M"
-#Valores padrao para not defined
+#Valores padrao para not defined - END
 AccessVector = "NULL"
 AccessComplexity = "NULL"
 Authentication = "NULL"
@@ -145,6 +145,12 @@ def Calcula_CVSS():
     cvss_vector = cve_dados.get('cvss-vector')
     cvss_vector = (cvss_vector.split('/'))
     
+    cve_resumo = cve_dados.get('summary')
+    cve_publicadoEm = cve_dados.get('Published')
+    cve_modificadoEm = cve_dados.get('Modified')
+    cve_referencias = cve_dados.get('references')
+    cve_produtosAfetados = cve_dados.get('vulnerable_product')
+    
     #Define valores do basescore
     AccessVector = cvss_vector[0]
     AccessComplexity = cvss_vector[1]
@@ -161,10 +167,12 @@ def Calcula_CVSS():
     TemporalScore = calculo_valores[1]
     EnviromentalScore = calculo_valores[2]
     
-    #Imprime dados
+    #Imprime dados // fazendo parse do json
     print ('\n -------------------------------------------- \n')
     print ('Dados', cve_code, ': \n')
-    print (json.dumps(cve_dados, indent=4, sort_keys=TRUE))
+    print ('Resumo: ', cve_resumo)
+    print ('Publicado em: ', cve_publicadoEm)
+    print ('Modificado em: ', cve_modificadoEm)
     print ('\n -------------------------------------------- \n')
     print ('Base Scores: \n')
     print ('Base: ', BaseScore)
@@ -172,6 +180,14 @@ def Calcula_CVSS():
     print ('Temporal Scores:' , TemporalScore ,'\n')
     print ('\n -------------------------------------------- \n')
     print ('Environmental:', EnviromentalScore,'\n')
+    print ('\n -------------------------------------------- \n')
+    print ('Referencias: ')
+    for referencia in cve_referencias: 
+        print(referencia,';')
+    print ('\n -------------------------------------------- \n')
+    print('Produtos Afetados: \n')
+    for produto in cve_produtosAfetados:
+        print(produto,';')
     print ('\n -------------------------------------------- \n')
 
 if __name__ == '__main__':
